@@ -1,73 +1,97 @@
-# React + TypeScript + Vite
+# 🌴 Tour Search App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript application for searching and browsing tours with real-time price updates.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🔍 **Smart Search** - Search by countries, cities, or hotels with autocomplete
+- 🌍 **Country Flags** - Visual country identification
+- ⚡ **Async Search** - Real-time price polling with 425 status handling
+- 🎨 **Modern UI** - Clean, responsive design with SCSS modules
+- ♿ **Accessible** - WCAG 2.1 AA compliant with ARIA attributes
+- 🛡️ **Error Handling** - Error boundaries for graceful degradation
+- 📦 **Type Safe** - Full TypeScript coverage
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React 19** with hooks
+- **TypeScript** - Strict mode
+- **Vite** - Fast build tool
+- **SCSS Modules** - Component-scoped styling
+- **Custom Hooks** - Reusable logic
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── api/              # API client and error handling
+├── components/
+│   ├── features/     # Feature components (SearchForm, TourCard, etc.)
+│   ├── ui/           # Reusable UI components (Button, Input, Loader)
+│   └── ErrorBoundary/
+├── contexts/         # React contexts (Services)
+├── hooks/            # Custom hooks
+├── services/         # Business logic layer
+├── types/            # TypeScript type definitions
+└── utils/            # Utility functions
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Installation
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+### Development
+
+```bash
+npm run dev
+```
+
+### Build
+
+```bash
+npm run build
+```
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+### Lint
+
+```bash
+npm run lint
+```
+
+## Architecture Highlights
+
+### Layered Architecture
+- **API Layer** - HTTP client with error handling
+- **Service Layer** - Business logic (singleton services wrapped in Context)
+- **Hooks Layer** - React hooks for state management
+- **Components Layer** - Presentational and feature components
+
+### Key Patterns
+- **Custom Hooks** - `useTourSearch`, `useCountries`, `useGeoSearch`, `useHotels`, `useIsMounted`
+- **Service Pattern** - Singleton services for data management
+- **Error Boundaries** - Global and component-level error handling
+- **Accessibility** - ARIA patterns (combobox, listbox, live regions)
+
+### Async Search Flow
+1. User selects destination
+2. `startSearchPrices()` returns token + `waitUntil` timestamp
+3. Poll `getSearchPrices()` until ready (handles 425 status)
+4. Display results with hotel details
+
+## Browser Support
+
+Modern browsers with ES2022 support.
+
+## License
+
+MIT
