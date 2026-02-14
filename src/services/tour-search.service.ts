@@ -3,6 +3,16 @@ import type { SearchState } from '../types';
 
 type StateChangeCallback = (state: SearchState) => void;
 
+/**
+ * Service for managing tour search operations
+ * 
+ * Note: This is a singleton service instance that maintains search state.
+ * For production apps with multiple tabs or complex state requirements,
+ * consider using React Context or a state management library (Redux, Zustand, etc.)
+ * 
+ * Current approach is sufficient for this application's scope where only one
+ * search can be active at a time.
+ */
 class TourSearchService {
     private currentSearch: SearchState = {
         status: 'idle',

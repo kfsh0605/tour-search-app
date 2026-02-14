@@ -1,6 +1,15 @@
 import { apiClient } from '../api';
 import type { Hotel } from '../types';
 
+/**
+ * Service for managing hotel data
+ * 
+ * Note: This is a singleton service instance. For production apps with multiple
+ * tabs or complex state management needs, consider using React Context or a
+ * state management library (Redux, Zustand, etc.)
+ * 
+ * Current approach is sufficient for this application's scope.
+ */
 class HotelService {
     private hotelsByCountry = new Map<string, Map<number, Hotel>>();
 

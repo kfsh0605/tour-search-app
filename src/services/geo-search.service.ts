@@ -1,6 +1,15 @@
 import { apiClient } from '../api';
 import type { GeoEntity, Country } from '../types';
 
+/**
+ * Service for geo entity search (countries, cities, hotels)
+ * 
+ * Note: This is a singleton service instance that caches all geo entities.
+ * For production apps with multiple tabs or complex state requirements,
+ * consider using React Context or a state management library (Redux, Zustand, etc.)
+ * 
+ * Current approach is sufficient for this application's scope.
+ */
 class GeoSearchService {
     private allEntitiesCache: GeoEntity[] | null = null;
     private initPromise: Promise<void> | null = null;
