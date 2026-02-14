@@ -7,6 +7,3 @@ export type { InputProps } from './Input';
 
 export { Loader } from './Loader';
 export type { LoaderProps } from './Loader';
-
-export { Dropdown, DropdownItem } from './Dropdown';
-export type { DropdownProps, DropdownItemProps } from './Dropdown';
