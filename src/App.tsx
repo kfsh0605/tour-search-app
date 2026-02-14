@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SearchForm, TourResults } from './components/features';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { useTourSearch } from './hooks';
 import styles from './App.module.scss';
 
@@ -25,20 +26,36 @@ function App() {
 
             <main className={styles.app__main}>
                 <div className={styles.app__container}>
-                    <div className={styles.app__search}>
-                        <SearchForm
-                            onSearch={handleSearch}
-                            disabled={tourSearch.isSearching}
-                        />
-                    </div>
+                    <ErrorBoundary
+                        fallback={
+                            <div className={styles.app__error}>
+                                <p>Unable to load search form. Please refresh the page.</p>
+                            </div>
+                        }
+                    >
+                        <div className={styles.app__search}>
+                            <SearchForm
+                                onSearch={handleSearch}
+                                disabled={tourSearch.isSearching}
+                            />
+                        </div>
+                    </ErrorBoundary>
 
                     {hasSearched && (
-                        <TourResults
-                            prices={tourSearch.prices}
-                            countryID={selectedCountry}
-                            loading={tourSearch.isSearching}
-                            error={tourSearch.error}
-                        />
+                        <ErrorBoundary
+                            fallback={
+                                <div className={styles.app__error}>
+                                    <p>Unable to load results. Please try searching again.</p>
+                                </div>
+                            }
+                        >
+                            <TourResults
+                                prices={tourSearch.prices}
+                                countryID={selectedCountry}
+                                loading={tourSearch.isSearching}
+                                error={tourSearch.error}
+                            />
+                        </ErrorBoundary>
                     )}
                 </div>
             </main>
