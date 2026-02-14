@@ -112,7 +112,7 @@ export function SearchForm({ onSearch, disabled = false }: SearchFormProps) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form onSubmit={handleSubmit} className={styles.form} role="search">
             <div className={styles.form__field} ref={dropdownRef}>
                 <Input
                     ref={inputRef}
@@ -123,12 +123,24 @@ export function SearchForm({ onSearch, disabled = false }: SearchFormProps) {
                     onClear={handleClear}
                     prefixIcon="🔍"
                     disabled={disabled}
+                    aria-label="Search for destination"
+                    aria-autocomplete="list"
+                    aria-controls={isDropdownOpen ? 'destination-listbox' : undefined}
+                    aria-expanded={isDropdownOpen}
+                    role="combobox"
                 />
 
                 {isDropdownOpen && (
-                    <div className={styles.form__dropdown}>
+                    <div 
+                        id="destination-listbox"
+                        className={styles.form__dropdown}
+                        role="listbox"
+                        aria-label="Destination suggestions"
+                    >
                         {countriesLoading || searchLoading ? (
-                            <div className={styles.form__loading}>Loading...</div>
+                            <div className={styles.form__loading} role="status" aria-live="polite">
+                                Loading...
+                            </div>
                         ) : dropdownItems.length > 0 ? (
                             dropdownItems.map((entity) => (
                                 <button
@@ -136,8 +148,12 @@ export function SearchForm({ onSearch, disabled = false }: SearchFormProps) {
                                     type="button"
                                     className={styles.form__item}
                                     onClick={() => handleSelectEntity(entity)}
+                                    role="option"
+                                    aria-selected={selectedEntity?.id === entity.id}
                                 >
-                                    <span className={styles.form__icon}>{getEntityIcon(entity)}</span>
+                                    <span className={styles.form__icon} aria-hidden="true">
+                                        {getEntityIcon(entity)}
+                                    </span>
                                     <span className={styles.form__name}>
                                         {entity.name}
                                         {entity.type !== 'country' && (
@@ -149,7 +165,9 @@ export function SearchForm({ onSearch, disabled = false }: SearchFormProps) {
                                 </button>
                             ))
                         ) : (
-                            <div className={styles.form__empty}>No results found</div>
+                            <div className={styles.form__empty} role="status">
+                                No results found
+                            </div>
                         )}
                     </div>
                 )}

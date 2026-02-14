@@ -17,6 +17,10 @@ function App() {
 
     return (
         <div className={styles.app}>
+            <a href="#main-content" className="skip-link">
+                Skip to main content
+            </a>
+
             <header className={styles.app__header}>
                 <div className={styles.app__container}>
                     <h1 className={styles.app__title}>🌴 Tour Search</h1>
@@ -24,7 +28,7 @@ function App() {
                 </div>
             </header>
 
-            <main className={styles.app__main}>
+            <main id="main-content" className={styles.app__main}>
                 <div className={styles.app__container}>
                     <ErrorBoundary
                         fallback={

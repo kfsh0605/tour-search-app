@@ -15,18 +15,20 @@ export function TourCard({ hotel, price, onOpenPrice }: TourCardProps) {
     };
 
     return (
-        <article className={styles.card}>
+        <article className={styles.card} aria-labelledby={`hotel-${hotel.id}`}>
             <div className={styles.card__image}>
-                <img src={hotel.img} alt={hotel.name} />
+                <img src={hotel.img} alt={`${hotel.name} hotel exterior`} />
             </div>
 
             <div className={styles.card__content}>
-                <h3 className={styles.card__title}>{hotel.name}</h3>
+                <h3 id={`hotel-${hotel.id}`} className={styles.card__title}>
+                    {hotel.name}
+                </h3>
 
                 <div className={styles.card__location}>
                     <img
                         src={getCountryFlagUrl(hotel.countryId)}
-                        alt={hotel.countryName}
+                        alt={`${hotel.countryName} flag`}
                         className={styles.card__flag}
                     />
                     <span className={styles.card__city}>
@@ -43,10 +45,10 @@ export function TourCard({ hotel, price, onOpenPrice }: TourCardProps) {
                     </div>
 
                     <div className={styles.card__price}>
-            <span className={styles.card__amount}>
+            <span className={styles.card__amount} aria-label={`Price: ${price.amount} US dollars`}>
               ${price.amount.toLocaleString()}
             </span>
-                        <span className={styles.card__currency}>USD</span>
+                        <span className={styles.card__currency} aria-hidden="true">USD</span>
                     </div>
                 </div>
 
@@ -55,6 +57,7 @@ export function TourCard({ hotel, price, onOpenPrice }: TourCardProps) {
                     fullWidth
                     onClick={handleClick}
                     className={styles.card__button}
+                    aria-label={`View price details for ${hotel.name}`}
                 >
                     Open Price
                 </Button>

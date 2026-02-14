@@ -15,8 +15,9 @@ export function Loader({ size = 'medium', centered = false }: LoaderProps) {
         .join(' ');
 
     return (
-        <div className={classNames}>
+        <div className={classNames} role="status" aria-live="polite" aria-label="Loading">
             <div className={styles.loader__spinner}></div>
+            <span className="visually-hidden">Loading...</span>
         </div>
     );
 }

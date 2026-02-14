@@ -84,13 +84,13 @@ export function TourResults({
     // Success state with results
     return (
         <div className={styles.results}>
-            <div className={styles.results__header}>
+            <div className={styles.results__header} role="status" aria-live="polite">
                 <h2 className={styles.results__title}>
                     Found {tours.length} tour{tours.length !== 1 ? 's' : ''}
                 </h2>
             </div>
 
-            <div className={styles.results__grid}>
+            <div className={styles.results__grid} role="list" aria-label="Tour results">
                 {tours.map(({ price, hotel }) => (
                     <TourCard
                         key={price.id}
