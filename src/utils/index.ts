@@ -1,2 +1,2 @@
-// Utility exports will be added here
-export {};
+// Country flags utility
+export { COUNTRY_FLAG_CODES, getCountryFlagUrl } from './country-flags';

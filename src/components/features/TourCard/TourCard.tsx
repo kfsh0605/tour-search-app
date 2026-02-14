@@ -1,5 +1,6 @@
 import type { Hotel, PriceOffer } from '../../../types';
 import { Button } from '../../ui';
+import { getCountryFlagUrl } from '../../../utils';
 import styles from './TourCard.module.scss';
 
 export interface TourCardProps {
@@ -24,7 +25,7 @@ export function TourCard({ hotel, price, onOpenPrice }: TourCardProps) {
 
                 <div className={styles.card__location}>
                     <img
-                        src={`https://flagcdn.com/w40/${hotel.countryId === '115' ? 'tr' : hotel.countryId === '43' ? 'eg' : 'gr'}.png`}
+                        src={getCountryFlagUrl(hotel.countryId)}
                         alt={hotel.countryName}
                         className={styles.card__flag}
                     />

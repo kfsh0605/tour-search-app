@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Input, Button } from '../../ui';
 import { useCountries, useGeoSearch } from '../../../hooks';
+import { getCountryFlagUrl } from '../../../utils';
 import type { GeoEntity } from '../../../types';
 import styles from './SearchForm.module.scss';
 
@@ -86,14 +87,25 @@ export function SearchForm({ onSearch, disabled = false }: SearchFormProps) {
         setIsDropdownOpen(false);
     };
 
-    const getEntityIcon = (type: string) => {
-        switch (type) {
+    const getEntityIcon = (entity: GeoEntity) => {
+        switch (entity.type) {
             case 'country':
-                return '🌍';
+                return (
+                    <img 
+                        src={getCountryFlagUrl(entity.id, 20)} 
+                        alt={entity.name}
+                        className={styles.form__flagIcon}
+                    />
+                );
             case 'city':
-                return '🏙️';
             case 'hotel':
-                return '🏨';
+                return (
+                    <img 
+                        src={getCountryFlagUrl(entity.countryId, 20)} 
+                        alt=""
+                        className={styles.form__flagIcon}
+                    />
+                );
             default:
                 return '📍';
         }
@@ -125,7 +137,7 @@ export function SearchForm({ onSearch, disabled = false }: SearchFormProps) {
                                     className={styles.form__item}
                                     onClick={() => handleSelectEntity(entity)}
                                 >
-                                    <span className={styles.form__icon}>{getEntityIcon(entity.type)}</span>
+                                    <span className={styles.form__icon}>{getEntityIcon(entity)}</span>
                                     <span className={styles.form__name}>
                                         {entity.name}
                                         {entity.type !== 'country' && (
