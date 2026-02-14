@@ -2,26 +2,46 @@ import {apiClient} from '../api';
 import type {GeoEntity} from '../types';
 
 class GeoSearchService {
-    private searchCache = new Map<string, GeoEntity[]>();
+    private allEntitiesCache: GeoEntity[] | null = null;
 
     async search(query: string): Promise<GeoEntity[]> {
         if (!query) {
             return [];
         }
 
-        if (this.searchCache.has(query)) {
-            return this.searchCache.get(query)!;
+        // Load all entities once
+        if (!this.allEntitiesCache) {
+            // Call searchGeo multiple times with different lengths to get all data
+            const results: GeoEntity[] = [];
+            const seenIds = new Set<string>();
+
+            for (let i = 0; i < 10; i++) {
+                try {
+                    const data = await apiClient.searchGeo('x'.repeat(i));
+                    Object.values(data).forEach((entity) => {
+                        const key = `${entity.type}-${entity.id}`;
+                        if (!seenIds.has(key)) {
+                            seenIds.add(key);
+                            results.push(entity);
+                        }
+                    });
+                } catch (error) {
+                    // Ignore errors
+                }
+            }
+
+            this.allEntitiesCache = results;
         }
 
-        const data = await apiClient.searchGeo(query);
-        const results = Object.values(data);
-
-        this.searchCache.set(query, results);
-        return results;
+        // Filter by query
+        const lowerQuery = query.toLowerCase();
+        return this.allEntitiesCache.filter((entity) =>
+            entity.name.toLowerCase().includes(lowerQuery)
+        );
     }
 
     clearCache(): void {
-        this.searchCache.clear();
+        this.allEntitiesCache = null;
     }
 }
 

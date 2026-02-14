@@ -9,7 +9,9 @@ import type {
     HotelsMap,
     Hotel,
     PriceOffer,
+    ErrorResponse,
 } from './types';
+import { ApiError } from './error-handler';
 
 class ApiClient {
     async getCountries(): Promise<CountriesMap> {
@@ -34,8 +36,8 @@ class ApiClient {
             return response.json();
         } catch (error) {
             if (error instanceof Response) {
-                const errorData = await error.json();
-                throw new Error(errorData.message || 'Failed to start search');
+                const errorData: ErrorResponse = await error.json();
+                throw new ApiError(errorData.code, errorData.message, errorData.waitUntil);
             }
             throw error;
         }
@@ -47,8 +49,8 @@ class ApiClient {
             return response.json();
         } catch (error) {
             if (error instanceof Response) {
-                const errorData = await error.json();
-                throw new Error(errorData.message || 'Failed to get search prices');
+                const errorData: ErrorResponse = await error.json();
+                throw new ApiError(errorData.code, errorData.message, errorData.waitUntil);
             }
             throw error;
         }
@@ -60,8 +62,8 @@ class ApiClient {
             return response.json();
         } catch (error) {
             if (error instanceof Response) {
-                const errorData = await error.json();
-                throw new Error(errorData.message || 'Failed to stop search');
+                const errorData: ErrorResponse = await error.json();
+                throw new ApiError(errorData.code, errorData.message, errorData.waitUntil);
             }
             throw error;
         }
@@ -81,8 +83,8 @@ class ApiClient {
             return response.json();
         } catch (error) {
             if (error instanceof Response) {
-                const errorData = await error.json();
-                throw new Error(errorData.message || 'Failed to fetch hotel');
+                const errorData: ErrorResponse = await error.json();
+                throw new ApiError(errorData.code, errorData.message);
             }
             throw error;
         }
@@ -94,8 +96,8 @@ class ApiClient {
             return response.json();
         } catch (error) {
             if (error instanceof Response) {
-                const errorData = await error.json();
-                throw new Error(errorData.message || 'Failed to fetch price');
+                const errorData: ErrorResponse = await error.json();
+                throw new ApiError(errorData.code, errorData.message);
             }
             throw error;
         }
