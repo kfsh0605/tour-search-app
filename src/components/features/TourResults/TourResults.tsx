@@ -20,20 +20,9 @@ export function TourResults({
                             }: TourResultsProps) {
     const { hotels, loading: hotelsLoading } = useHotels(countryID);
 
-    console.log('🎨 TourResults render:', { 
-        pricesCount: prices?.size, 
-        hotelsCount: hotels.size, 
-        loading, 
-        hotelsLoading,
-        countryID 
-    });
-
     // Combine prices with hotels and sort by price
     const tours = useMemo(() => {
-        console.log('🔄 Computing tours...', { hasPrices: !!prices, hotelsSize: hotels.size });
-        
         if (!prices || !hotels.size) {
-            console.log('⚠️ No prices or hotels');
             return [];
         }
 
@@ -41,14 +30,12 @@ export function TourResults({
             .map((price) => {
                 const hotelId = Number(price.hotelID) || 0;
                 const hotel = hotels.get(hotelId);
-                console.log('🏨 Mapping price:', price.id, 'hotelID:', price.hotelID, 'parsed:', hotelId, 'hotel found:', !!hotel);
                 if (!hotel) return null;
                 return { price, hotel };
             })
             .filter((tour) => tour !== null)
             .sort((a, b) => a!.price.amount - b!.price.amount);
 
-        console.log('✅ Tours computed:', toursArray.length);
         return toursArray as Array<{ price: PriceOffer; hotel: any }>;
     }, [prices, hotels]);
 

@@ -13,10 +13,11 @@ export function SearchForm({ onSearch, disabled = false }: SearchFormProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedEntity, setSelectedEntity] = useState<GeoEntity | null>(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [shouldLoadCountries, setShouldLoadCountries] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const { countries, loading: countriesLoading } = useCountries();
+    const { countries, loading: countriesLoading } = useCountries(shouldLoadCountries);
     const { results: searchResults, loading: searchLoading } = useGeoSearch(searchQuery);
 
     // Determine what to show in dropdown
@@ -42,6 +43,7 @@ export function SearchForm({ onSearch, disabled = false }: SearchFormProps) {
     }, [isDropdownOpen]);
 
     const handleInputClick = () => {
+        setShouldLoadCountries(true);
         setIsDropdownOpen(true);
     };
 

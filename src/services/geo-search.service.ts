@@ -3,6 +3,7 @@ import type {GeoEntity} from '../types';
 
 class GeoSearchService {
     private allEntitiesCache: GeoEntity[] | null = null;
+    private isLoading = false;
 
     async search(query: string): Promise<GeoEntity[]> {
         if (!query) {
@@ -10,7 +11,9 @@ class GeoSearchService {
         }
 
         // Load all entities once
-        if (!this.allEntitiesCache) {
+        if (!this.allEntitiesCache && !this.isLoading) {
+            this.isLoading = true;
+            
             // Call searchGeo multiple times with different lengths to get all data
             const results: GeoEntity[] = [];
             const seenIds = new Set<string>();
@@ -31,17 +34,24 @@ class GeoSearchService {
             }
 
             this.allEntitiesCache = results;
+            this.isLoading = false;
+        }
+
+        // Wait if loading
+        while (this.isLoading) {
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
 
         // Filter by query
         const lowerQuery = query.toLowerCase();
-        return this.allEntitiesCache.filter((entity) =>
+        return this.allEntitiesCache?.filter((entity) =>
             entity.name.toLowerCase().includes(lowerQuery)
-        );
+        ) || [];
     }
 
     clearCache(): void {
         this.allEntitiesCache = null;
+        this.isLoading = false;
     }
 }
 

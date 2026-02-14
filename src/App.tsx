@@ -5,10 +5,12 @@ import styles from './App.module.scss';
 
 function App() {
     const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+    const [hasSearched, setHasSearched] = useState(false);
     const tourSearch = useTourSearch();
 
     const handleSearch = async (countryID: string) => {
         setSelectedCountry(countryID);
+        setHasSearched(true);
         await tourSearch.startSearch(countryID);
     };
 
@@ -30,12 +32,14 @@ function App() {
                         />
                     </div>
 
-                    <TourResults
-                        prices={tourSearch.prices}
-                        countryID={selectedCountry}
-                        loading={tourSearch.isSearching}
-                        error={tourSearch.error}
-                    />
+                    {hasSearched && (
+                        <TourResults
+                            prices={tourSearch.prices}
+                            countryID={selectedCountry}
+                            loading={tourSearch.isSearching}
+                            error={tourSearch.error}
+                        />
+                    )}
                 </div>
             </main>
         </div>

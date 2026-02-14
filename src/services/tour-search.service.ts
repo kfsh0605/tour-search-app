@@ -19,8 +19,6 @@ class TourSearchService {
         countryID: string,
         onStateChange: StateChangeCallback
     ): Promise<void> {
-        console.log('🔍 Starting search for country:', countryID);
-        
         // Reset state
         this.currentSearch = {
             status: 'searching',
@@ -35,8 +33,6 @@ class TourSearchService {
             // Start search and get token
             const { token, waitUntil } = await apiClient.startSearchPrices(countryID);
 
-            console.log('✅ Got token:', token, 'waitUntil:', waitUntil);
-
             this.currentSearch.token = token;
             onStateChange(this.currentSearch);
 
@@ -44,14 +40,11 @@ class TourSearchService {
             const waitTime = new Date(waitUntil).getTime() - Date.now();
             const safeWaitTime = Math.max(0, waitTime);
 
-            console.log('⏱️ Waiting', safeWaitTime, 'ms before polling');
-
             // Wait and then poll for results
             this.pollingTimeout = setTimeout(() => {
                 this.pollResults(token, onStateChange);
             }, safeWaitTime);
         } catch (error) {
-            console.error('❌ Start search error:', error);
             this.currentSearch.status = 'error';
             this.currentSearch.error =
                 error instanceof Error ? error.message : 'Failed to start search';
@@ -63,13 +56,9 @@ class TourSearchService {
         token: string,
         onStateChange: StateChangeCallback
     ): Promise<void> {
-        console.log('📡 Polling results for token:', token);
-        
         try {
             // Try to get search results
             const { prices } = await apiClient.getSearchPrices(token);
-
-            console.log('✅ Got prices:', Object.keys(prices).length, 'tours');
 
             // Success - convert to Map
             const pricesMap = new Map(
@@ -81,12 +70,8 @@ class TourSearchService {
             this.currentSearch.error = null;
             onStateChange(this.currentSearch);
         } catch (error) {
-            console.log('⚠️ Poll error:', error);
-            
             // Check if results are not ready yet (425 error)
             if (isNotReadyError(error)) {
-                console.log('⏳ Results not ready, waiting...', error.waitUntil);
-                
                 // Wait and retry
                 const waitTime = error.waitUntil
                     ? new Date(error.waitUntil).getTime() - Date.now()
@@ -99,8 +84,6 @@ class TourSearchService {
                 }, safeWaitTime);
             } else {
                 // Other error - check retry count
-                console.log('❌ Other error, retry count:', this.currentSearch.retryCount);
-                
                 if (this.currentSearch.retryCount < this.maxRetries) {
                     this.currentSearch.retryCount++;
                     onStateChange(this.currentSearch);
@@ -111,7 +94,6 @@ class TourSearchService {
                     }, 1000);
                 } else {
                     // Max retries reached
-                    console.error('❌ Max retries reached');
                     this.currentSearch.status = 'error';
                     this.currentSearch.error =
                         error instanceof Error ? error.message : 'Failed to get search results';

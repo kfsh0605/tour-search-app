@@ -2,13 +2,18 @@ import { useState, useEffect } from 'react';
 import { countryService } from '../services';
 import type { Country } from '../types';
 
-export function useCountries() {
+export function useCountries(shouldLoad: boolean = true) {
     const [countries, setCountries] = useState<Country[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        if (!shouldLoad) {
+            return;
+        }
+
         let isMounted = true;
+        setLoading(true);
 
         countryService
             .getCountries()
@@ -32,7 +37,7 @@ export function useCountries() {
         return () => {
             isMounted = false;
         };
-    }, []);
+    }, [shouldLoad]);
 
     return { countries, loading, error };
 }

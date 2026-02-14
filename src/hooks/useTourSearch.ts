@@ -13,7 +13,6 @@ export function useTourSearch() {
 
     const startSearch = useCallback(async (countryID: string) => {
         await tourSearchService.startSearch(countryID, (newState) => {
-            console.log('📢 State update from service:', newState);
             setState({ ...newState }); // Create new object to trigger re-render
         });
     }, []);
