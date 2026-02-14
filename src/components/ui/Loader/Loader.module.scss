@@ -1,0 +1,44 @@
+.loader {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &--centered {
+    display: flex;
+    width: 100%;
+    min-height: 200px;
+  }
+
+  &__spinner {
+    border-radius: 50%;
+    border-style: solid;
+    border-color: #e5e7eb;
+    border-top-color: #2563eb;
+    animation: spin 0.8s linear infinite;
+  }
+
+  // Size modifiers
+  &--small &__spinner {
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+  }
+
+  &--medium &__spinner {
+    width: 40px;
+    height: 40px;
+    border-width: 4px;
+  }
+
+  &--large &__spinner {
+    width: 60px;
+    height: 60px;
+    border-width: 5px;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
