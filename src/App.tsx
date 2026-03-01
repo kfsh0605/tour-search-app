@@ -1,18 +1,19 @@
 import { useState } from 'react';
 import { SearchForm, TourResults } from './components/features';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { useTourSearch } from './hooks';
+import { useTourSearchStore } from './store';
 import styles from './App.module.scss';
 
 function App() {
     const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
     const [hasSearched, setHasSearched] = useState(false);
-    const tourSearch = useTourSearch();
+    
+    const { startSearch, isSearching } = useTourSearchStore();
 
     const handleSearch = async (countryID: string) => {
         setSelectedCountry(countryID);
         setHasSearched(true);
-        await tourSearch.startSearch(countryID);
+        await startSearch(countryID);
     };
 
     return (
@@ -40,7 +41,7 @@ function App() {
                         <div className={styles.app__search}>
                             <SearchForm
                                 onSearch={handleSearch}
-                                disabled={tourSearch.isSearching}
+                                disabled={isSearching}
                             />
                         </div>
                     </ErrorBoundary>
@@ -53,12 +54,7 @@ function App() {
                                 </div>
                             }
                         >
-                            <TourResults
-                                prices={tourSearch.prices}
-                                countryID={selectedCountry}
-                                loading={tourSearch.isSearching}
-                                error={tourSearch.error}
-                            />
+                            <TourResults countryID={selectedCountry} />
                         </ErrorBoundary>
                     )}
                 </div>

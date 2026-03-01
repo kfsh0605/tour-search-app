@@ -44,6 +44,7 @@ class TourSearchService {
             const { token, waitUntil } = await apiClient.startSearchPrices(countryID);
 
             this.currentSearch.token = token;
+            this.currentSearch.status = 'polling';
             onStateChange(this.currentSearch);
 
             // Calculate wait time
@@ -75,7 +76,7 @@ class TourSearchService {
                 Object.entries(prices).map(([id, price]) => [id, price])
             );
 
-            this.currentSearch.status = 'ready';
+            this.currentSearch.status = 'success';
             this.currentSearch.prices = pricesMap;
             this.currentSearch.error = null;
             onStateChange(this.currentSearch);

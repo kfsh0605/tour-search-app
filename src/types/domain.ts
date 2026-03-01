@@ -8,7 +8,7 @@ export interface Tour {
     price: PriceOffer;
 }
 
-export type SearchStatus = 'idle' | 'searching' | 'ready' | 'error';
+export type SearchStatus = 'idle' | 'searching' | 'polling' | 'success' | 'error';
 
 export interface SearchState {
     status: SearchStatus;

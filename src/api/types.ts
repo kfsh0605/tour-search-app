@@ -43,7 +43,7 @@ export interface PriceOffer {
     currency: 'usd';
     startDate: string;
     endDate: string;
-    hotelID?: number;
+    hotelID?: number | string; // Can be number or string from API
 }
 
 // Price search response
