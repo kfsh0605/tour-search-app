@@ -12,31 +12,20 @@ export function useCountries(shouldLoad: boolean = true) {
             return;
         }
 
-        let isMounted = true;
         setLoading(true);
 
         countryService
             .getCountries()
             .then((data) => {
-                if (isMounted) {
-                    setCountries(Array.from(data.values()));
-                    setError(null);
-                }
+                setCountries(Array.from(data.values()));
+                setError(null);
             })
             .catch((err) => {
-                if (isMounted) {
-                    setError(err instanceof Error ? err.message : 'Failed to load countries');
-                }
+                setError(err instanceof Error ? err.message : 'Failed to load countries');
             })
             .finally(() => {
-                if (isMounted) {
-                    setLoading(false);
-                }
+                setLoading(false);
             });
-
-        return () => {
-            isMounted = false;
-        };
     }, [shouldLoad]);
 
     return { countries, loading, error };

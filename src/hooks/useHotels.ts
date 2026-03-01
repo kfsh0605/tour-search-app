@@ -14,31 +14,20 @@ export function useHotels(countryID: string | null) {
             return;
         }
 
-        let isMounted = true;
         setLoading(true);
 
         hotelService
             .getHotelsByCountry(countryID)
             .then((data) => {
-                if (isMounted) {
-                    setHotels(data);
-                    setError(null);
-                }
+                setHotels(data);
+                setError(null);
             })
             .catch((err) => {
-                if (isMounted) {
-                    setError(err instanceof Error ? err.message : 'Failed to load hotels');
-                }
+                setError(err instanceof Error ? err.message : 'Failed to load hotels');
             })
             .finally(() => {
-                if (isMounted) {
-                    setLoading(false);
-                }
+                setLoading(false);
             });
-
-        return () => {
-            isMounted = false;
-        };
     }, [countryID]);
 
     return { hotels, loading, error };

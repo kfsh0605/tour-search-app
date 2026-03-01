@@ -23,33 +23,22 @@ export function useTours(countryID: string | null) {
       return;
     }
 
-    let isMounted = true;
     setLoading(true);
     setError(null);
 
     tourAggregationService
       .aggregateToursForPrices(prices, countryID)
       .then((aggregatedTours) => {
-        if (isMounted) {
-          setTours(aggregatedTours);
-          setError(null);
-        }
+        setTours(aggregatedTours);
+        setError(null);
       })
       .catch((err) => {
-        if (isMounted) {
-          setError(err instanceof Error ? err.message : 'Failed to load tours');
-          setTours([]);
-        }
+        setError(err instanceof Error ? err.message : 'Failed to load tours');
+        setTours([]);
       })
       .finally(() => {
-        if (isMounted) {
-          setLoading(false);
-        }
+        setLoading(false);
       });
-
-    return () => {
-      isMounted = false;
-    };
   }, [prices, countryID, status]);
 
   return { tours, loading, error };
