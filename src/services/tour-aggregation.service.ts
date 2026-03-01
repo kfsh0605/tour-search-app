@@ -11,21 +11,19 @@ import type { PriceOffer } from '../api/types';
 class TourAggregationService {
   /**
    * Aggregate prices with hotels to create Tour objects
-   * Loads only the hotels that are needed (not all hotels in country)
+   * Loads ONLY the specific hotels needed (not all hotels in country)
    * 
    * @param prices - Map of price offers
-   * @param countryID - Country ID for loading hotels
    * @returns Array of Tour objects (price + hotel)
    */
   async aggregateToursForPrices(
     prices: Map<string, PriceOffer>,
-    countryID: string
   ): Promise<Tour[]> {
     if (!prices || prices.size === 0) {
       return [];
     }
 
-    // Get unique hotel IDs from prices (filter out undefined and convert to number)
+    // Get unique hotel IDs from prices
     const hotelIds = new Set<number>();
     prices.forEach((price) => {
       if (price.hotelID !== undefined) {
@@ -36,19 +34,31 @@ class TourAggregationService {
       }
     });
 
-    // Load hotels (this will use cache if available)
-    const hotelsMap = await hotelService.getHotelsByCountry(countryID);
+    // Load ONLY the specific hotels we need (not all 10,000 hotels in country!)
+    const hotelLoadPromises = Array.from(hotelIds).map((hotelId) =>
+      hotelService.getHotel(hotelId).catch((error) => {
+        console.warn(`Failed to load hotel ${hotelId}:`, error);
+        return null;
+      })
+    );
+
+    const hotels = await Promise.all(hotelLoadPromises);
+    
+    // Create a Map for quick lookup
+    const hotelsMap = new Map(
+      hotels
+        .filter((hotel) => hotel !== null)
+        .map((hotel) => [hotel!.id, hotel!])
+    );
 
     // Combine prices with hotels
     const tours: Tour[] = [];
     
     prices.forEach((price) => {
-      // Skip if hotelID is undefined
       if (price.hotelID === undefined) {
         return;
       }
       
-      // Convert hotelID to number for Map lookup (API returns string, Map uses number)
       const hotelIdNumber = typeof price.hotelID === 'string' 
         ? Number(price.hotelID) 
         : price.hotelID;

@@ -4,13 +4,9 @@ import { useTours } from '../../../hooks';
 import { useTourSearchStore } from '../../../store';
 import styles from './TourResults.module.scss';
 
-export interface TourResultsProps {
-    countryID: string | null;
-}
-
-export function TourResults({ countryID }: TourResultsProps) {
+export function TourResults() {
     const { status, error: searchError } = useTourSearchStore();
-    const { tours, loading: toursLoading, error: toursError } = useTours(countryID);
+    const { tours, loading: toursLoading, error: toursError } = useTours();
 
     const handleOpenPrice = (_priceId: string) => {
         // TODO: Implement price details modal or navigation

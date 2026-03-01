@@ -8,8 +8,9 @@ import type { Tour } from '../types';
  * Uses TourAggregationService to combine data
  * 
  * This hook replaces the logic that was previously in TourResults component
+ * Now loads ONLY the specific hotels needed (not all hotels in country)
  */
-export function useTours(countryID: string | null) {
+export function useTours() {
   const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +18,7 @@ export function useTours(countryID: string | null) {
   const { prices, status } = useTourSearchStore();
 
   useEffect(() => {
-    if (!countryID || !prices || status !== 'success') {
+    if (!prices || status !== 'success') {
       setTours([]);
       setLoading(false);
       return;
@@ -27,7 +28,7 @@ export function useTours(countryID: string | null) {
     setError(null);
 
     tourAggregationService
-      .aggregateToursForPrices(prices, countryID)
+      .aggregateToursForPrices(prices)
       .then((aggregatedTours) => {
         setTours(aggregatedTours);
         setError(null);
@@ -39,7 +40,7 @@ export function useTours(countryID: string | null) {
       .finally(() => {
         setLoading(false);
       });
-  }, [prices, countryID, status]);
+  }, [prices, status]);
 
   return { tours, loading, error };
 }

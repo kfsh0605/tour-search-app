@@ -5,13 +5,11 @@ import { useTourSearchStore } from './store';
 import styles from './App.module.scss';
 
 function App() {
-    const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
     const [hasSearched, setHasSearched] = useState(false);
     
     const { startSearch, isSearching } = useTourSearchStore();
 
     const handleSearch = async (countryID: string) => {
-        setSelectedCountry(countryID);
         setHasSearched(true);
         await startSearch(countryID);
     };
@@ -54,7 +52,7 @@ function App() {
                                 </div>
                             }
                         >
-                            <TourResults countryID={selectedCountry} />
+                            <TourResults />
                         </ErrorBoundary>
                     )}
                 </div>
