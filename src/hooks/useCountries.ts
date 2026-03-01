@@ -1,32 +1,34 @@
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { countryService } from '../services';
 import type { Country } from '../types';
 
-export function useCountries(shouldLoad: boolean = true) {
+/**
+ * Hook to load countries data with imperative API
+ * Returns a method to trigger loading instead of auto-loading on mount
+ */
+export function useCountries() {
     const [countries, setCountries] = useState<Country[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (!shouldLoad) {
+    const loadCountries = useCallback(async () => {
+        // Don't reload if already loaded
+        if (countries.length > 0 || loading) {
             return;
         }
 
         setLoading(true);
+        setError(null);
 
-        countryService
-            .getCountries()
-            .then((data) => {
-                setCountries(Array.from(data.values()));
-                setError(null);
-            })
-            .catch((err) => {
-                setError(err instanceof Error ? err.message : 'Failed to load countries');
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }, [shouldLoad]);
+        try {
+            const data = await countryService.getCountries();
+            setCountries(Array.from(data.values()));
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to load countries');
+        } finally {
+            setLoading(false);
+        }
+    }, [countries.length, loading]);
 
-    return { countries, loading, error };
+    return { countries, loading, error, loadCountries };
 }

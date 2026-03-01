@@ -12,9 +12,8 @@ export interface SearchFormProps {
 export function SearchForm({ onSearch, disabled = false }: SearchFormProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedEntity, setSelectedEntity] = useState<GeoEntity | null>(null);
-    const [shouldLoadCountries, setShouldLoadCountries] = useState(false);
 
-    const { countries, loading: countriesLoading } = useCountries(shouldLoadCountries);
+    const { countries, loading: countriesLoading, loadCountries } = useCountries();
     const { results: searchResults, loading: searchLoading } = useGeoSearch(searchQuery);
 
     // Determine what to show in dropdown
@@ -33,9 +32,7 @@ export function SearchForm({ onSearch, disabled = false }: SearchFormProps) {
         }
         
         // Lazy load countries on first interaction
-        if (!shouldLoadCountries) {
-            setShouldLoadCountries(true);
-        }
+        loadCountries();
     };
 
     const handleSelectOption = (option: any) => {
